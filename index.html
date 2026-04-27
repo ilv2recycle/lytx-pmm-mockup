@@ -420,9 +420,15 @@
   <!-- ===== Sidebar ===== -->
   <aside class="sidebar">
     <div class="nav-section">Library</div>
-    <div class="nav-item active">📚 All evidence <span class="count">4,218</span></div>
+    <div class="nav-item active" id="nav-library" onclick="showView('library')">📚 All evidence <span class="count">4,218</span></div>
     <div class="nav-item">⭐ Saved searches <span class="count">12</span></div>
     <div class="nav-item">🧵 Themes <span class="count">37</span></div>
+
+    <div class="nav-section">Campaigns</div>
+    <div class="nav-item" id="nav-attribution" onclick="showView('attribution')" style="position:relative;">
+      📈 Did it land? <span class="count" style="background:#fef0e8; color:#b8430b;">3 live</span>
+    </div>
+    <div class="nav-item">📋 Brief leadership <span class="count">2</span></div>
 
     <div class="nav-section">By Persona</div>
     <div class="nav-item"><span class="dot" style="background:#1d4ed8"></span> Safety Director <span class="count">812</span></div>
@@ -447,6 +453,7 @@
 
   <!-- ===== Main ===== -->
   <main class="main">
+   <div id="view-library">
     <h1 class="h1">Why do customers switch from Samsara to Lytx?</h1>
     <div class="crumb">All evidence · last 12 months · 87 results · clustered into 6 themes</div>
 
@@ -475,6 +482,139 @@
 
     <!-- Evidence cards -->
     <div id="cards"></div>
+   </div><!-- /view-library -->
+
+   <div id="view-attribution" hidden>
+    <div class="crumb">Campaigns › "Fewer Alerts, Better Signal" launch · 86 days post-launch</div>
+    <h1 class="h1">Did it land? — MV+AI positioning campaign</h1>
+
+    <div style="display:flex; gap:12px; margin: 6px 0 18px; color:var(--slate-600); font-size:13px; flex-wrap:wrap;">
+      <span><b style="color:var(--ink)">Launched:</b> Feb 1, 2026</span>
+      <span style="color:var(--slate-300)">·</span>
+      <span><b style="color:var(--ink)">Owner:</b> O. Mendez</span>
+      <span style="color:var(--slate-300)">·</span>
+      <span><b style="color:var(--ink)">Assets:</b> Battlecard, deck, 2 emails, web update</span>
+      <span style="color:var(--slate-300)">·</span>
+      <span><b style="color:var(--ink)">Goal:</b> Reduce false-positive narrative</span>
+    </div>
+
+    <div class="ask-card" style="background: linear-gradient(135deg, #0a4a32 0%, #0f7a4a 100%);">
+      <div class="label" style="color:#a7f3d0">✨ Echo verdict</div>
+      <div class="q">The positioning is landing.</div>
+      <div style="line-height:1.55; color: rgba(255,255,255,.92); margin-bottom:14px;">
+        Mentions of Samsara false-positive fatigue in customer calls dropped <b style="color:white">71% in 60 days</b> (41 → 12 quotes/quarter). Sentiment in MV+AI conversations shifted from <b style="color:white">mixed to net positive</b>. Win rate against Samsara in head-to-head deals climbed from <b style="color:white">24% to 38%</b>.
+      </div>
+      <div class="suggested">
+        <button class="chip">↳ Why is this working?</button>
+        <button class="chip">↳ Build the leadership briefing</button>
+        <button class="chip">↳ Compare to Q4 campaign</button>
+        <button class="chip">↳ Recommend the next move</button>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px; margin-bottom:14px;">
+      <div class="card" style="margin:0;">
+        <div style="font-size:11px; color:var(--slate-500); text-transform:uppercase; letter-spacing:.6px; font-weight:600;">False-positive mentions</div>
+        <div style="font-size:28px; font-weight:700; margin:8px 0 4px; letter-spacing:-.3px;">12 <span style="font-size:13px; color:var(--green); font-weight:600;">↓ 71%</span></div>
+        <div style="color:var(--slate-500); font-size:12px;">Was 41 in Q4 '25</div>
+      </div>
+      <div class="card" style="margin:0;">
+        <div style="font-size:11px; color:var(--slate-500); text-transform:uppercase; letter-spacing:.6px; font-weight:600;">MV+AI sentiment</div>
+        <div style="font-size:28px; font-weight:700; margin:8px 0 4px; letter-spacing:-.3px;">+0.42 <span style="font-size:13px; color:var(--green); font-weight:600;">↑ from −0.08</span></div>
+        <div style="color:var(--slate-500); font-size:12px;">Net positive in 60 days</div>
+      </div>
+      <div class="card" style="margin:0;">
+        <div style="font-size:11px; color:var(--slate-500); text-transform:uppercase; letter-spacing:.6px; font-weight:600;">Win rate vs Samsara</div>
+        <div style="font-size:28px; font-weight:700; margin:8px 0 4px; letter-spacing:-.3px;">38% <span style="font-size:13px; color:var(--green); font-weight:600;">↑ from 24%</span></div>
+        <div style="color:var(--slate-500); font-size:12px;">22 head-to-head deals</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;">
+        <div>
+          <div style="font-weight:700; font-size:15px;">"False-positive" mentions in customer calls</div>
+          <div style="color:var(--slate-500); font-size:12px;">Last 6 months · weekly · across 1,842 Gong calls</div>
+        </div>
+        <span class="tag theme">🧵 False-positive fatigue</span>
+      </div>
+      <svg viewBox="0 0 800 220" style="width:100%; height:auto;" role="img" aria-label="Mentions over time chart">
+        <line x1="40" y1="180" x2="780" y2="180" stroke="#e2e8f0"/>
+        <line x1="40" y1="135" x2="780" y2="135" stroke="#e2e8f0" stroke-dasharray="2,4"/>
+        <line x1="40" y1="90"  x2="780" y2="90"  stroke="#e2e8f0" stroke-dasharray="2,4"/>
+        <line x1="40" y1="45"  x2="780" y2="45"  stroke="#e2e8f0" stroke-dasharray="2,4"/>
+        <text x="32" y="184" font-size="11" fill="#94a3b8" text-anchor="end">0</text>
+        <text x="32" y="139" font-size="11" fill="#94a3b8" text-anchor="end">5</text>
+        <text x="32" y="94"  font-size="11" fill="#94a3b8" text-anchor="end">10</text>
+        <text x="32" y="49"  font-size="11" fill="#94a3b8" text-anchor="end">15</text>
+        <line x1="380" y1="20" x2="380" y2="180" stroke="#ff6b1a" stroke-width="2" stroke-dasharray="4,4"/>
+        <text x="386" y="32" font-size="11" fill="#ff6b1a" font-weight="700">Campaign launch · Feb 1</text>
+        <path d="M 60 60 L 120 75 L 180 50 L 240 65 L 300 55 L 360 70 L 380 80 L 420 110 L 480 130 L 540 145 L 600 155 L 660 160 L 720 165 L 760 168 L 760 180 L 60 180 Z" fill="rgba(11,29,58,.06)"/>
+        <path d="M 60 60 L 120 75 L 180 50 L 240 65 L 300 55 L 360 70 L 380 80 L 420 110 L 480 130 L 540 145 L 600 155 L 660 160 L 720 165 L 760 168" fill="none" stroke="#0b1d3a" stroke-width="2.5"/>
+        <circle cx="60"  cy="60"  r="3" fill="#0b1d3a"/>
+        <circle cx="120" cy="75"  r="3" fill="#0b1d3a"/>
+        <circle cx="180" cy="50"  r="3" fill="#0b1d3a"/>
+        <circle cx="240" cy="65"  r="3" fill="#0b1d3a"/>
+        <circle cx="300" cy="55"  r="3" fill="#0b1d3a"/>
+        <circle cx="360" cy="70"  r="3" fill="#0b1d3a"/>
+        <circle cx="420" cy="110" r="3" fill="#14a36b"/>
+        <circle cx="480" cy="130" r="3" fill="#14a36b"/>
+        <circle cx="540" cy="145" r="3" fill="#14a36b"/>
+        <circle cx="600" cy="155" r="3" fill="#14a36b"/>
+        <circle cx="660" cy="160" r="3" fill="#14a36b"/>
+        <circle cx="720" cy="165" r="3" fill="#14a36b"/>
+        <circle cx="760" cy="168" r="3" fill="#14a36b"/>
+        <text x="60"  y="200" font-size="11" fill="#94a3b8">Nov</text>
+        <text x="180" y="200" font-size="11" fill="#94a3b8">Dec</text>
+        <text x="300" y="200" font-size="11" fill="#94a3b8">Jan</text>
+        <text x="420" y="200" font-size="11" fill="#94a3b8">Feb</text>
+        <text x="540" y="200" font-size="11" fill="#94a3b8">Mar</text>
+        <text x="660" y="200" font-size="11" fill="#94a3b8">Apr</text>
+      </svg>
+    </div>
+
+    <h2 style="margin: 28px 0 10px; font-size:16px; font-weight:700;">Customer language: before vs. after launch</h2>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+      <div class="card" style="margin:0;">
+        <div style="display:flex; gap:8px; align-items:center; margin-bottom:10px;">
+          <span class="tag" style="background:#fdecec; color:#b8302a; border-color:#f7c8c5;">⏪ Before · Q4 '25</span>
+        </div>
+        <p class="quote" style="font-size:13.5px; border-color:#d6453d;">"Samsara was crying wolf 30× a day. We're shopping replacements but worried Lytx will be more of the same."</p>
+        <div class="meta-row">
+          <span><b>Safety Director</b> · regional LTL</span>
+          <span class="dot">·</span>
+          <span>Gong, Dec 12, 2025</span>
+        </div>
+      </div>
+      <div class="card" style="margin:0;">
+        <div style="display:flex; gap:8px; align-items:center; margin-bottom:10px;">
+          <span class="tag" style="background:#ecf8f1; color:#0f7a4a; border-color:#c8e9d6;">⏩ After · Q1 '26</span>
+        </div>
+        <p class="quote" style="font-size:13.5px; border-color:#14a36b;">"We saw the Lytx demo — the AI is actually quiet when it should be. That was the differentiator we needed to see."</p>
+        <div class="meta-row">
+          <span><b>VP Operations</b> · truckload carrier</span>
+          <span class="dot">·</span>
+          <span>Gong, Mar 18, 2026</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="gen-card" style="margin-top:24px;">
+      <div class="title">⚡ Echo recommends</div>
+      <div class="sub">Based on what's working in this campaign + remaining gaps in customer evidence:</div>
+      <div class="gen-list">
+        <button class="gen-item">
+          <span class="ic">🚀</span> Extend campaign — add a coaching-workflow track <span class="arrow">›</span>
+        </button>
+        <button class="gen-item">
+          <span class="ic">📊</span> Auto-build "What landed" briefing for the CEO <span class="arrow">›</span>
+        </button>
+        <button class="gen-item">
+          <span class="ic">🎯</span> Schedule re-run on next campaign in 60 days <span class="arrow">›</span>
+        </button>
+      </div>
+    </div>
+   </div><!-- /view-attribution -->
   </main>
 
   <!-- ===== Right rail ===== -->
@@ -685,6 +825,29 @@ function toggle(i) {
   render();
 }
 function clearSel() { selected.clear(); dock.classList.remove('show'); render(); }
+
+function showView(name) {
+  const lib = document.getElementById('view-library');
+  const att = document.getElementById('view-attribution');
+  const rail = document.querySelector('.rail');
+  const navLib = document.getElementById('nav-library');
+  const navAtt = document.getElementById('nav-attribution');
+  if (name === 'attribution') {
+    lib.hidden = true; att.hidden = false;
+    rail.style.display = 'none';
+    document.querySelector('.app').style.gridTemplateColumns = '232px 1fr';
+    document.querySelector('.app').style.gridTemplateAreas = '"topbar topbar" "sidebar main"';
+    navLib.classList.remove('active'); navAtt.classList.add('active');
+  } else {
+    lib.hidden = false; att.hidden = true;
+    rail.style.display = '';
+    document.querySelector('.app').style.gridTemplateColumns = '232px 1fr 340px';
+    document.querySelector('.app').style.gridTemplateAreas = '"topbar topbar topbar" "sidebar main rail"';
+    navLib.classList.add('active'); navAtt.classList.remove('active');
+  }
+  window.scrollTo(0, 0);
+  document.querySelector('.main').scrollTo(0, 0);
+}
 
 function openModal() { document.getElementById('modal').classList.add('open'); }
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
