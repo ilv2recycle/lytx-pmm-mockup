@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Echo — Customer Evidence Miner (Lytx PMM mockup)</title>
+<style>
+  :root {
+    --navy-900: #0b1d3a;
+    --navy-800: #122a52;
+    --navy-700: #1a3a6e;
+    --orange:   #ff6b1a;
+    --orange-2: #ffb38a;
+    --ink:      #0e1726;
+    --slate-50: #f6f8fb;
+    --slate-100:#eef2f7;
+    --slate-200:#e2e8f0;
+    --slate-300:#cbd5e1;
+    --slate-400:#94a3b8;
+    --slate-500:#64748b;
+    --slate-600:#475569;
+    --slate-700:#334155;
+    --green:    #14a36b;
+    --red:      #d6453d;
+    --amber:    #c97a14;
+    --shadow:   0 1px 2px rgba(15,23,42,.06), 0 4px 12px rgba(15,23,42,.06);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--slate-50);
+  }
+  button { font: inherit; cursor: pointer; }
+  a { color: inherit; }
+
+  /* ===== Layout ===== */
+  .app {
+    display: grid;
+    grid-template-columns: 232px 1fr 340px;
+    grid-template-rows: 56px 1fr;
+    grid-template-areas:
+      "topbar topbar topbar"
+      "sidebar main rail";
+    height: 100vh;
+  }
+
+  /* ===== Top bar ===== */
+  .topbar {
+    grid-area: topbar;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 20px;
+    background: var(--navy-900);
+    color: white;
+    border-bottom: 1px solid #000;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 700; letter-spacing: .2px;
+  }
+  .brand .logo {
+    width: 28px; height: 28px; border-radius: 7px;
+    background: linear-gradient(135deg, var(--orange) 0%, #ffae5e 100%);
+    display: grid; place-items: center;
+    color: var(--navy-900); font-weight: 800;
+  }
+  .brand .sub { color: var(--slate-300); font-weight: 400; font-size: 12px; margin-left: 6px; }
+  .search {
+    flex: 1;
+    max-width: 720px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 10px;
+    padding: 8px 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .search input {
+    flex: 1; background: transparent; border: 0; outline: 0;
+    color: white; font-size: 14px;
+  }
+  .search input::placeholder { color: rgba(255,255,255,.55); }
+  .search .kbd {
+    font-size: 11px; color: rgba(255,255,255,.6);
+    border: 1px solid rgba(255,255,255,.2); padding: 2px 6px; border-radius: 4px;
+  }
+  .topbar .right { display: flex; gap: 10px; align-items: center; }
+  .pill {
+    background: rgba(255,255,255,.1); color: white;
+    border: 1px solid rgba(255,255,255,.15);
+    padding: 4px 10px; border-radius: 999px; font-size: 12px;
+  }
+  .avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--orange); color: var(--navy-900);
+    display: grid; place-items: center; font-weight: 700; font-size: 12px;
+  }
+
+  /* ===== Sidebar ===== */
+  .sidebar {
+    grid-area: sidebar;
+    background: white;
+    border-right: 1px solid var(--slate-200);
+    padding: 18px 14px;
+    overflow-y: auto;
+  }
+  .nav-section {
+    text-transform: uppercase; font-size: 11px; letter-spacing: .8px;
+    color: var(--slate-500); margin: 14px 6px 6px;
+    font-weight: 600;
+  }
+  .nav-section:first-child { margin-top: 0; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 10px; border-radius: 8px; cursor: pointer;
+    color: var(--slate-700); font-weight: 500;
+  }
+  .nav-item:hover { background: var(--slate-100); }
+  .nav-item.active { background: var(--navy-900); color: white; }
+  .nav-item .count {
+    margin-left: auto; font-size: 11px; color: var(--slate-500);
+    background: var(--slate-100); padding: 1px 7px; border-radius: 999px;
+  }
+  .nav-item.active .count { background: rgba(255,255,255,.15); color: white; }
+  .nav-item .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+  }
+
+  /* ===== Main ===== */
+  .main {
+    grid-area: main;
+    overflow-y: auto;
+    padding: 22px 28px 80px;
+  }
+  .h1 { font-size: 22px; font-weight: 700; margin: 0 0 4px; letter-spacing: -.2px; }
+  .crumb { color: var(--slate-500); font-size: 12px; margin-bottom: 14px; }
+
+  .ask-card {
+    background: linear-gradient(135deg, #0b1d3a 0%, #1a3a6e 100%);
+    color: white;
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow);
+  }
+  .ask-card .label {
+    text-transform: uppercase; font-size: 11px; letter-spacing: 1px;
+    color: var(--orange-2); font-weight: 600;
+  }
+  .ask-card .q {
+    font-size: 20px; font-weight: 600; margin: 6px 0 12px;
+    letter-spacing: -.2px;
+  }
+  .suggested {
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .suggested .chip {
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.18);
+    color: white; padding: 6px 12px; border-radius: 999px;
+    font-size: 12px;
+  }
+  .suggested .chip:hover { background: rgba(255,255,255,.18); }
+
+  /* ===== Filter row ===== */
+  .filterbar {
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    margin: 6px 0 14px;
+  }
+  .filter {
+    background: white; border: 1px solid var(--slate-200);
+    padding: 6px 12px; border-radius: 8px; font-size: 13px;
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--slate-700);
+  }
+  .filter .v { font-weight: 600; color: var(--ink); }
+  .filter .x { color: var(--slate-400); }
+  .filter:hover { background: var(--slate-100); }
+  .filter.add { color: var(--slate-500); border-style: dashed; }
+  .results-meta {
+    color: var(--slate-500); font-size: 12px; margin-left: auto;
+  }
+  .results-meta b { color: var(--ink); }
+
+  /* ===== Evidence card ===== */
+  .card {
+    background: white;
+    border: 1px solid var(--slate-200);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+    transition: transform .08s ease;
+  }
+  .card:hover { transform: translateY(-1px); }
+  .card .quote {
+    font-size: 15px; line-height: 1.55;
+    color: var(--ink);
+    border-left: 3px solid var(--orange);
+    padding-left: 12px;
+    margin: 0 0 12px;
+  }
+  .card .meta-row {
+    display: flex; gap: 12px; align-items: center;
+    color: var(--slate-600); font-size: 12px;
+    flex-wrap: wrap;
+  }
+  .card .meta-row .dot { color: var(--slate-300); }
+  .card .meta-row b { color: var(--ink); font-weight: 600; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 9px; border-radius: 999px; font-size: 11px;
+    font-weight: 500;
+    border: 1px solid var(--slate-200);
+    background: var(--slate-50);
+    color: var(--slate-700);
+  }
+  .tag.persona  { background: #eef4ff; color: #1d4ed8; border-color: #c8dafd; }
+  .tag.usecase  { background: #fff4ec; color: #b8430b; border-color: #fdd7bf; }
+  .tag.objection{ background: #fdecec; color: #b8302a; border-color: #f7c8c5; }
+  .tag.theme    { background: #ecf8f1; color: #0f7a4a; border-color: #c8e9d6; }
+  .tag.source   { background: #f1f0ff; color: #5b3fd6; border-color: #d6d2f7; }
+
+  .sentiment {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 12px; font-weight: 600;
+  }
+  .sentiment.pos { color: var(--green); }
+  .sentiment.neg { color: var(--red); }
+  .sentiment.mix { color: var(--amber); }
+  .sentiment::before {
+    content: ""; width: 8px; height: 8px; border-radius: 50%;
+    background: currentColor;
+  }
+
+  .card-actions {
+    display: flex; gap: 10px; margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--slate-200);
+  }
+  .btn {
+    border: 1px solid var(--slate-200); background: white;
+    padding: 6px 12px; border-radius: 8px; font-size: 12px;
+    color: var(--slate-700); font-weight: 600;
+  }
+  .btn:hover { background: var(--slate-100); }
+  .btn.primary {
+    background: var(--orange); border-color: var(--orange); color: white;
+  }
+  .btn.primary:hover { background: #e85e10; }
+  .btn.dark {
+    background: var(--navy-900); border-color: var(--navy-900); color: white;
+  }
+  .btn.dark:hover { background: var(--navy-800); }
+
+  /* ===== Right rail ===== */
+  .rail {
+    grid-area: rail;
+    background: white;
+    border-left: 1px solid var(--slate-200);
+    overflow-y: auto;
+    padding: 22px 20px 60px;
+  }
+  .rail h3 {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--slate-500); margin: 0 0 10px;
+  }
+  .theme {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 10px; border-radius: 8px;
+    cursor: pointer;
+  }
+  .theme:hover { background: var(--slate-100); }
+  .theme .name { flex: 1; font-weight: 500; }
+  .theme .bar {
+    height: 5px; background: var(--slate-100); border-radius: 999px;
+    width: 80px; overflow: hidden;
+  }
+  .theme .bar > i {
+    display: block; height: 100%; background: var(--orange);
+    border-radius: 999px;
+  }
+  .theme .n { font-size: 11px; color: var(--slate-500); width: 30px; text-align: right; }
+
+  .gen-card {
+    margin-top: 22px;
+    background: linear-gradient(180deg, #fff 0%, #fef6f0 100%);
+    border: 1px solid var(--orange-2);
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .gen-card .title {
+    font-weight: 700; font-size: 14px; margin-bottom: 4px;
+  }
+  .gen-card .sub {
+    font-size: 12px; color: var(--slate-600); margin-bottom: 12px;
+  }
+  .gen-list {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .gen-item {
+    background: white; border: 1px solid var(--slate-200);
+    padding: 8px 10px; border-radius: 8px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px;
+  }
+  .gen-item .ic {
+    width: 22px; height: 22px; border-radius: 6px;
+    background: var(--slate-100);
+    display: grid; place-items: center; font-size: 11px;
+    color: var(--slate-700);
+  }
+  .gen-item:hover { border-color: var(--orange); }
+  .gen-item .arrow { margin-left: auto; color: var(--slate-400); }
+
+  /* ===== Modal ===== */
+  .modal-bg {
+    position: fixed; inset: 0; background: rgba(11,29,58,.45);
+    display: none; align-items: center; justify-content: center;
+    z-index: 100;
+  }
+  .modal-bg.open { display: flex; }
+  .modal {
+    background: white; border-radius: 14px;
+    width: min(720px, 92vw);
+    max-height: 88vh; overflow: hidden;
+    display: flex; flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0,0,0,.25);
+  }
+  .modal header {
+    padding: 18px 22px; border-bottom: 1px solid var(--slate-200);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .modal header .t { font-weight: 700; font-size: 16px; }
+  .modal header .close {
+    margin-left: auto; background: none; border: 0; color: var(--slate-500);
+    font-size: 22px; line-height: 1;
+  }
+  .modal .body {
+    padding: 18px 22px; overflow-y: auto;
+  }
+  .modal .body h4 {
+    margin: 18px 0 6px; font-size: 13px; text-transform: uppercase;
+    letter-spacing: .8px; color: var(--slate-500);
+  }
+  .modal .body h4:first-child { margin-top: 0; }
+  .modal .body p { margin: 0 0 8px; }
+  .modal footer {
+    padding: 14px 22px; border-top: 1px solid var(--slate-200);
+    display: flex; gap: 8px; justify-content: flex-end;
+  }
+  .battle-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .battle-cell {
+    border: 1px solid var(--slate-200); border-radius: 10px; padding: 12px;
+  }
+  .battle-cell .h {
+    font-weight: 700; font-size: 13px; margin-bottom: 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .battle-cell ul { margin: 4px 0 0 18px; padding: 0; }
+  .battle-cell li { margin: 3px 0; font-size: 13px; color: var(--slate-700); }
+  .miniquote {
+    font-size: 12px; color: var(--slate-600);
+    border-left: 2px solid var(--orange); padding-left: 8px;
+    margin: 6px 0;
+  }
+
+  /* ===== Bottom dock ===== */
+  .dock {
+    position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+    background: var(--navy-900); color: white;
+    padding: 10px 14px; border-radius: 999px;
+    display: none; align-items: center; gap: 14px;
+    box-shadow: 0 10px 30px rgba(11,29,58,.35);
+    z-index: 50;
+  }
+  .dock.show { display: inline-flex; }
+  .dock .n { font-weight: 700; }
+  .dock .lbl { color: var(--slate-300); font-size: 13px; }
+  .dock .btn { background: var(--orange); border-color: var(--orange); }
+  .dock .btn:hover { background: #e85e10; }
+  .dock .btn.ghost { background: transparent; color: white; border-color: rgba(255,255,255,.25); }
+
+  .check {
+    width: 16px; height: 16px; border-radius: 4px;
+    border: 1.5px solid var(--slate-300);
+    display: inline-grid; place-items: center; flex-shrink: 0;
+    margin-right: 4px; cursor: pointer;
+  }
+  .check.on { background: var(--orange); border-color: var(--orange); color: white; }
+  .check.on::after { content: "✓"; font-size: 12px; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ===== Top bar ===== -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">E</div>
+      Echo
+      <span class="sub">Customer Evidence Miner · Lytx PMM</span>
+    </div>
+    <div class="search">
+      <span style="opacity:.7">🔎</span>
+      <input id="askInput" value="Why do customers switch from Samsara to Lytx?" />
+      <span class="kbd">⌘K</span>
+    </div>
+    <div class="right">
+      <span class="pill">● Synced 4 min ago</span>
+      <div class="avatar">OM</div>
+    </div>
+  </div>
+
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar">
+    <div class="nav-section">Library</div>
+    <div class="nav-item active">📚 All evidence <span class="count">4,218</span></div>
+    <div class="nav-item">⭐ Saved searches <span class="count">12</span></div>
+    <div class="nav-item">🧵 Themes <span class="count">37</span></div>
+
+    <div class="nav-section">By Persona</div>
+    <div class="nav-item"><span class="dot" style="background:#1d4ed8"></span> Safety Director <span class="count">812</span></div>
+    <div class="nav-item"><span class="dot" style="background:#7c3aed"></span> VP Operations <span class="count">503</span></div>
+    <div class="nav-item"><span class="dot" style="background:#0ea5a5"></span> Fleet Manager <span class="count">1,194</span></div>
+    <div class="nav-item"><span class="dot" style="background:#ca8a04"></span> CFO / Finance <span class="count">271</span></div>
+    <div class="nav-item"><span class="dot" style="background:#dc2626"></span> Driver Trainer <span class="count">389</span></div>
+
+    <div class="nav-section">By Source</div>
+    <div class="nav-item">🎙 Gong calls <span class="count">1,842</span></div>
+    <div class="nav-item">⭐ G2 / TrustRadius <span class="count">418</span></div>
+    <div class="nav-item">🎫 Support tickets <span class="count">1,103</span></div>
+    <div class="nav-item">📊 NPS / CSAT <span class="count">624</span></div>
+    <div class="nav-item">🏆 Win-loss interviews <span class="count">231</span></div>
+
+    <div class="nav-section">By Product</div>
+    <div class="nav-item">DriveCam Coaching <span class="count">2,108</span></div>
+    <div class="nav-item">MV+AI Event Detection <span class="count">1,415</span></div>
+    <div class="nav-item">Fleet Tracking <span class="count">512</span></div>
+    <div class="nav-item">Compliance / HOS <span class="count">183</span></div>
+  </aside>
+
+  <!-- ===== Main ===== -->
+  <main class="main">
+    <h1 class="h1">Why do customers switch from Samsara to Lytx?</h1>
+    <div class="crumb">All evidence · last 12 months · 87 results · clustered into 6 themes</div>
+
+    <div class="ask-card">
+      <div class="label">✨ Echo summary</div>
+      <div class="q">3 reasons dominate the Samsara → Lytx switch story</div>
+      <div style="line-height:1.55; color: rgba(255,255,255,.92); margin-bottom: 14px;">
+        <b style="color:white;">1. False-positive fatigue</b> on Samsara's AI is the #1 trigger (mentioned in 41 of 87 quotes). <b style="color:white;">2. Driver-coaching workflow</b> — buyers want the actual video clip in coaching reviews, not just a score (29 quotes). <b style="color:white;">3. SIF reduction proof</b> — Lytx's Driver Safety Program track record closes the CFO objection (22 quotes).
+      </div>
+      <div class="suggested">
+        <button class="chip">↳ Show only Safety Director quotes</button>
+        <button class="chip">↳ Just the CFO/ROI proof</button>
+        <button class="chip">↳ Compare to Motive switchers</button>
+        <button class="chip">↳ Generate Samsara battlecard</button>
+      </div>
+    </div>
+
+    <div class="filterbar">
+      <span class="filter"><span>Persona:</span> <span class="v">Safety Director, VP Ops</span> <span class="x">×</span></span>
+      <span class="filter"><span>Competitor:</span> <span class="v">Samsara</span> <span class="x">×</span></span>
+      <span class="filter"><span>Source:</span> <span class="v">Gong, Win-loss</span> <span class="x">×</span></span>
+      <span class="filter"><span>Date:</span> <span class="v">Last 12 months</span> <span class="x">×</span></span>
+      <span class="filter add">+ Add filter</span>
+      <span class="results-meta"><b>87</b> quotes · sorted by <b>relevance</b></span>
+    </div>
+
+    <!-- Evidence cards -->
+    <div id="cards"></div>
+  </main>
+
+  <!-- ===== Right rail ===== -->
+  <aside class="rail">
+    <h3>Auto-clustered themes</h3>
+    <div class="theme"><span class="name">False-positive fatigue</span><span class="bar"><i style="width:90%"></i></span><span class="n">41</span></div>
+    <div class="theme"><span class="name">Coaching workflow + clip</span><span class="bar"><i style="width:64%"></i></span><span class="n">29</span></div>
+    <div class="theme"><span class="name">SIF / claims reduction</span><span class="bar"><i style="width:48%"></i></span><span class="n">22</span></div>
+    <div class="theme"><span class="name">Union / driver buy-in</span><span class="bar"><i style="width:36%"></i></span><span class="n">17</span></div>
+    <div class="theme"><span class="name">TMS / telematics integration</span><span class="bar"><i style="width:28%"></i></span><span class="n">13</span></div>
+    <div class="theme"><span class="name">Implementation timeline</span><span class="bar"><i style="width:18%"></i></span><span class="n">8</span></div>
+
+    <div class="gen-card">
+      <div class="title">⚡ Generate from this evidence</div>
+      <div class="sub">Drafts use approved Lytx voice + auto-cite the source quotes.</div>
+      <div class="gen-list">
+        <button class="gen-item" onclick="openModal()">
+          <span class="ic">⚔</span> Samsara battlecard <span class="arrow">›</span>
+        </button>
+        <button class="gen-item">
+          <span class="ic">📄</span> One-pager: "Switching from Samsara" <span class="arrow">›</span>
+        </button>
+        <button class="gen-item">
+          <span class="ic">🎤</span> Demo script (12 min, MV+AI focus) <span class="arrow">›</span>
+        </button>
+        <button class="gen-item">
+          <span class="ic">📧</span> 3-touch nurture sequence <span class="arrow">›</span>
+        </button>
+        <button class="gen-item">
+          <span class="ic">📊</span> Sales enablement deck (10 slides) <span class="arrow">›</span>
+        </button>
+        <button class="gen-item">
+          <span class="ic">📰</span> Analyst briefing talking points <span class="arrow">›</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- ===== Bottom dock (selection) ===== -->
+<div class="dock" id="dock">
+  <span><span class="n" id="dockN">0</span> <span class="lbl">quotes selected</span></span>
+  <button class="btn ghost" onclick="clearSel()">Clear</button>
+  <button class="btn" onclick="openModal()">Generate battlecard →</button>
+</div>
+
+<!-- ===== Battlecard modal ===== -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <header>
+      <div class="t">⚔ Samsara battlecard — draft</div>
+      <span class="pill" style="background: #eef4ff; color: #1d4ed8; border:1px solid #c8dafd;">Cited from 24 quotes</span>
+      <button class="close" onclick="closeModal()">×</button>
+    </header>
+    <div class="body">
+      <h4>Positioning (one-liner)</h4>
+      <p>For fleets that have outgrown Samsara's noisy AI, Lytx delivers fewer false positives, the actual video clip in every coaching review, and a 25-year track record of measurable SIF reduction.</p>
+
+      <h4>Win themes</h4>
+      <div class="battle-grid">
+        <div class="battle-cell">
+          <div class="h">✅ Where we win</div>
+          <ul>
+            <li>AI precision — fewer "ghost" alerts</li>
+            <li>Coaching workflow w/ embedded clip</li>
+            <li>Driver Safety Program (managed service)</li>
+            <li>Proven SIF / claims reduction</li>
+          </ul>
+          <div class="miniquote">"Samsara was crying wolf 30× a day. Drivers stopped trusting the alerts." — VP Safety, regional LTL · Win interview</div>
+        </div>
+        <div class="battle-cell">
+          <div class="h">⚠ Where they push back</div>
+          <ul>
+            <li>Single-pane integration breadth</li>
+            <li>Lower headline price</li>
+            <li>Modern dashboard look-and-feel</li>
+            <li>Faster self-serve install</li>
+          </ul>
+          <div class="miniquote">"Samsara felt more like a software product. Lytx feels like a safety program." — Fleet Director · Gong, Mar 2026</div>
+        </div>
+      </div>
+
+      <h4>Objection handlers (auto-drafted, cite-backed)</h4>
+      <p><b>"Samsara is cheaper."</b> — Lead with SIF + claims math: cited customer saw 38% severe-event reduction in 9 months, paying back the contract delta inside year one (Gong, CFO, last-mile delivery, Feb 2026).</p>
+      <p><b>"Drivers won't accept inward-facing cameras."</b> — Use the union case study: waste hauler with Teamsters local accepted Lytx specifically because the coaching review shows the clip, not just a score (G2 review, Jan 2026).</p>
+
+      <h4>Proof points to drop in the deck</h4>
+      <p>• 41 buyer quotes citing Samsara false-positive fatigue (last 12 mo)<br>
+         • Avg. 32% severe-event reduction across 7 named accounts<br>
+         • 3 logos that switched in Q1 (CSV available on request)</p>
+    </div>
+    <footer>
+      <button class="btn" onclick="closeModal()">Refine</button>
+      <button class="btn" onclick="closeModal()">Export to Google Doc</button>
+      <button class="btn dark" onclick="closeModal()">Send to Highspot</button>
+    </footer>
+  </div>
+</div>
+
+<script>
+const QUOTES = [
+  {
+    quote: "We switched from Samsara because their AI was flagging false positives 30 times a day. Drivers stopped trusting the alerts entirely. Lytx caught a rollover risk our old system missed three times in one week.",
+    person: "VP Safety", company: "Regional LTL carrier, ~600 trucks",
+    source: "Win-loss interview", date: "Mar 14, 2026",
+    tags: [["persona","Safety Director"],["usecase","MV+AI"],["theme","False-positive fatigue"],["source","Win-loss"]],
+    sentiment: "pos"
+  },
+  {
+    quote: "The driver coaching workflow is what sold our union. We can show the actual clip in the review, not just a score. That changed the whole tone of the conversation.",
+    person: "Safety Director", company: "Waste hauler, Teamsters local",
+    source: "G2 review", date: "Feb 28, 2026",
+    tags: [["persona","Safety Director"],["usecase","DriveCam Coaching"],["theme","Coaching workflow"],["source","G2"]],
+    sentiment: "pos"
+  },
+  {
+    quote: "Sticker shock at first — Samsara's quote was lower. After 90 days, the SIF reduction had paid the contract back. Renewed for 36 months.",
+    person: "CFO", company: "Last-mile delivery, ~2,800 vehicles",
+    source: "Gong call", date: "Feb 11, 2026",
+    tags: [["persona","CFO / Finance"],["usecase","DriveCam Coaching"],["theme","SIF / claims reduction"],["objection","Cost vs Samsara"]],
+    sentiment: "pos"
+  },
+  {
+    quote: "Honestly, implementation took longer than promised. Six weeks, not three. We got there, but our ops team was frustrated. Worth a heads-up to future customers.",
+    person: "Fleet Ops Manager", company: "Regional foodservice distributor",
+    source: "Support ticket", date: "Jan 22, 2026",
+    tags: [["persona","Fleet Manager"],["theme","Implementation timeline"],["objection","Time to value"]],
+    sentiment: "neg"
+  },
+  {
+    quote: "Drivers hated it for the first month, then they got it. By month three they were asking the trainer for ride-along reviews. The behavior change is real.",
+    person: "Driver Trainer", company: "Long-haul reefer fleet",
+    source: "Gong call", date: "Mar 02, 2026",
+    tags: [["persona","Driver Trainer"],["usecase","DriveCam Coaching"],["theme","Union / driver buy-in"]],
+    sentiment: "mix"
+  },
+  {
+    quote: "We needed it to play nicely with McLeod and Trimble. Lytx's API surface is narrower than Samsara's, but the data we actually need lands in our TMS clean. Good enough.",
+    person: "VP Operations", company: "Truckload carrier, ~1,400 power units",
+    source: "Win-loss interview", date: "Dec 18, 2025",
+    tags: [["persona","VP Operations"],["theme","TMS / integration"],["objection","Integration breadth"]],
+    sentiment: "mix"
+  },
+  {
+    quote: "The Driver Safety Program is the differentiator. Samsara sells you software; Lytx sells you a program with humans behind it. That's why our claims attorney prefers Lytx evidence.",
+    person: "Risk Manager", company: "Construction services, mixed fleet",
+    source: "G2 review", date: "Mar 09, 2026",
+    tags: [["persona","Safety Director"],["usecase","DriveCam Coaching"],["theme","SIF / claims reduction"]],
+    sentiment: "pos"
+  },
+  {
+    quote: "Samsara felt more like a software product. Lytx feels like a safety program. Both have a place — depends what your board is asking you to deliver.",
+    person: "Fleet Director", company: "National service fleet",
+    source: "Gong call", date: "Mar 22, 2026",
+    tags: [["persona","Fleet Manager"],["theme","Coaching workflow"]],
+    sentiment: "mix"
+  }
+];
+
+const cards = document.getElementById('cards');
+const dock = document.getElementById('dock');
+const dockN = document.getElementById('dockN');
+let selected = new Set();
+
+function render() {
+  cards.innerHTML = QUOTES.map((q, i) => `
+    <div class="card">
+      <div style="display:flex; align-items:flex-start; gap:10px;">
+        <span class="check ${selected.has(i) ? 'on':''}" onclick="toggle(${i})"></span>
+        <p class="quote" style="flex:1;">"${q.quote}"</p>
+      </div>
+      <div class="meta-row">
+        <span><b>${q.person}</b> · ${q.company}</span>
+        <span class="dot">·</span>
+        <span>${q.source}</span>
+        <span class="dot">·</span>
+        <span>${q.date}</span>
+        <span class="dot">·</span>
+        <span class="sentiment ${q.sentiment}">${q.sentiment === 'pos' ? 'Positive' : q.sentiment === 'neg' ? 'Negative' : 'Mixed'}</span>
+      </div>
+      <div class="meta-row" style="margin-top:10px;">
+        ${q.tags.map(([t, v]) => `<span class="tag ${t}">${labelFor(t)}${v}</span>`).join('')}
+      </div>
+      <div class="card-actions">
+        <button class="btn">↳ Use as proof point</button>
+        <button class="btn">📋 Copy quote</button>
+        <button class="btn">🔗 Open source</button>
+        <button class="btn" style="margin-left:auto;">Find similar →</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function labelFor(t) {
+  return ({
+    persona: '👤 ',
+    usecase: '🛠 ',
+    objection: '⚠ ',
+    theme: '🧵 ',
+    source: '📥 ',
+  })[t] || '';
+}
+
+function toggle(i) {
+  if (selected.has(i)) selected.delete(i); else selected.add(i);
+  dockN.textContent = selected.size;
+  dock.classList.toggle('show', selected.size > 0);
+  render();
+}
+function clearSel() { selected.clear(); dock.classList.remove('show'); render(); }
+
+function openModal() { document.getElementById('modal').classList.add('open'); }
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+document.getElementById('modal').addEventListener('click', (e) => {
+  if (e.target.id === 'modal') closeModal();
+});
+
+render();
+</script>
+</body>
+</html>
